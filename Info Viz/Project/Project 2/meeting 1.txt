@@ -1,0 +1,15 @@
+meeting 1
+*mine
+-good with connection
+-unclearin style concpets
+*theirs
+-starts on high level and breaks down
+-bars for each name too much
+-stays measured in data denisty
+meeting 2 
+*mine
+-the bottom was found measy in it's ablity to show data
+-It's good at showing large amounts of data and conections
+*theirs
+-The dashboard condenses data easily,It clearly shows important points
+-the keys graph pie, seems unclear is it the base key of the song or the keys in one selected song? or the key overall. It Seems unclear what's controlled by the song selector and doesn't show many connections
