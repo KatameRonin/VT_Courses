@@ -1,5 +1,6 @@
 The assignments I did during my Masters in Computer Science at Virginia Tech.
 
-1. [Information Visualization](Info Viz)
-2. [Research Methods in Computer Science](Research Methods in CS)
+1. [Information Visualization](InfoViz)
+2. [Research Methods in Computer Science](ResearchMethodsCS)
 3. [Advanced Machine Learning](AML)
+4. [Data Analytics](DataAnalytics)
