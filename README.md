@@ -1,4 +1,4 @@
-The assignments I did during my Masters in Computer Science at Virginia Tech.
+Assignments from some Courses I did during my Masters in Computer Science at Virginia Tech.
 
 1. [Information Visualization](InfoViz)
 2. [Research Methods in Computer Science](ResearchMethodsCS)
