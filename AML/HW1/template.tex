@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\title{\textbf{CS 5824/ECE 5424: Advanced Machine Learning 
+Assignment 1
+ }}
+\author{Fall 2022}
+\date{Due Date: Sep 29, 2022, 11:59pm EST}
+
+
+\usepackage[letterpaper, margin=0.9in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\begin{document}
+
+\clearpage\maketitle
+\thispagestyle{empty}
+
+\section*{Introduction}
+
+This homework will cover Maximum Likelihood Estimators (MLE), Linear Regression, Logistic Regression, and Evaluation (cross-validation, confusion matrices, bias-variance trade-off, etc.). The objective of this homework is to enable you to understand these concepts in more detail and help you draw connections between many important mathematical concepts and their utility in ML.\\
+
+\noindent The homework consists of two sections, Section A and Section B. Only Section A questions are given in this document. Section B is a Python Notebook that you will have received along with this document. You are expected to solve both the questions in the notebook and in this problem set, i.e., complete all questions from both sections A and B.
+
+\begin{itemize}
+
+    \item The homework is due at 11:59 PM on the due date. We will be using Canvas for collecting homework assignments. For section A, feel free to submit a PDF, either of a scanned copy of your handwritten solution or a typed solution (using Microsoft Word, Latex, etc). Contact the TAs if you have technical difficulties in submitting the assignment. Section A homework should be submitted as a single pdf using the name convention \textbf{yourFirstName-yourLastName.pdf}.
+    
+    \item We encourage you to not submit late so that you don't accrue late days. Please declare the number of late days used for this homework at the top of your report. \textbf{Refer to the late days policy on the canvas page for more information.} \textit{TLDR: HWs are to be done individually, and each student gets up to 5 late days to use as per their discretion. No more than up to 3 late days can be allocated to a specific HW.}
+
+    \item For each question, please include all necessary calculation steps. If the result is not an integer, round your result to 3 decimal places.
+    
+    \item Please use the discussion section on Piazza (\url{https://piazza.com/class/l74tedj5el86tp}) to ask questions about the homework. Also, feel free to e-mail us at \url{cs5824-g@cs.vt.edu} and come to office hours.
+
+    
+\end{itemize}
+
+\section*{Section A [60 pts]}
+
+You are expected to submit your solutions to this section as a PDF file. LaTeX is strongly preferred, but is not mandatory. The solutions need to be neat and legible. You should provide reasoning for your solution and show all your work. Except for obvious solutions, points will be deducted if there is no reasoning provided.
+
+\section*{Problem 1. MLE (10 points total)}
+
+% \textbf{Q1. (5 points)} The beta distribution has support on~$(0,1)$ and has
+% a probability density function given by
+% \begin{align*}
+%   B(u\,;\,a,b) &= \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}
+%   u^{a-1}(1-u)^{b-1}.
+% \end{align*}
+% For many practical problems, we would like the bounded support of the
+% beta distribution, but on a different interval than~$(0,1)$.  One way
+% to achieve this is to linearly transform beta random variates so that
+% they are defined on an interval of our choosing.  Write the PDF that
+% results from such a transformation, where the target support
+% is~$(s,t)$.
+
+% \paragraph{}
+\textbf{Q1. (5 points)} Assume that there are $N$ observations ~$x_1, x_2, \ldots , x_N$, which are i.i.d sampled from the same underlying distribution. Suppose that the underlying distribution is Bernoulli $Ber(p)$. Derive the MLE estimator of $p$ with details.
+
+% An alternative way to define a distribution with
+% finite support is to use a bijective map from the real line to a
+% bounded interval.  Perhaps the most common way to do this is via the
+% logistic function:
+% \begin{align*}
+%   \sigma(x) &= \frac{1}{1+\exp\{-x\}}.
+% \end{align*}
+% \begin{enumerate}
+%     \item Let~$X$ be a random variable that has a Gaussian distribution with mean~$\mu$ and variance~$\nu$.  If~$Y=\sigma(X)$, what is the PDF for~$Y$?
+    
+%     \item If we had data in~$(0,1)$ that were drawn independently and identically from this PDF, how would you quickly compute the MLE of~$\mu$ and~$\nu$? (Hint: The MLE of Gaussian data is easy.)
+% \end{enumerate}
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q2. (5 points)} Assume that there are $N$ observations ~$x_1, x_2, ..., x_N$, which are i.i.d sampled from the same underlying distribution. Suppose that the underlying distribution is Poisson distribution with PMF
+\begin{align*}
+  P(x) &= \frac{\lambda ^ xe^{-\lambda}}{x!}
+\end{align*}
+
+\begin{enumerate}
+    \item (3 points) Derive the MLE estimator of $\lambda$ with details.
+    \item (2 points) Let $Y$ be a discrete random variable drawn from a Poisson distribution. Derive the expectation of $Y$.
+\end{enumerate}
+
+\section*{Problem 2. Linear Regression (30 points total)}
+
+\begin{center}
+\caption{Table 1: A small data set about vehicle speed\label{vehicle}}
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline
+ No  & 1 & 2 & 3 & 4 & 5 & 6  \\ \hline
+ number of wheels  & 4 & 4 & 2 & 8 & 4 & 3 \\ \hline
+ cost (dollars) & 15000 & 25000 & 5000 & 40000 & 22000 & 17000 \\ \hline
+max mph & 160 & 150 & 70 & 100 & 200 & 150\\ 
+ \hline
+ 
+\end{tabular}
+\end{center}
+
+Consider the dataset shown in Table 1. We want to train a Linear Regression model using the given dataset as training data, where the first two properties (e.g., number of wheels and vehicle cost) are treated as features and the third property (e.g., max miles per hour, mph) is treated as the target which we want to predict. Here, we use $x^{(i)}$ to denote the input features of the $i$-th sample in the dataset (e.g., ${x_j}^{(i)}$ is the $j$-th feature of the $i$-th sample) and $y^{(i)}$ to denote the label of the corresponding sample. The linear model $h_w({x})$ can be viewed as a trainable function of the input feature ${x}$ of the form
+\begin{align*}
+    h_w({x}) &= w_0 + w_1x_1 + w_2x_2,
+\end{align*}
+where the $w_i$'s are the parameters of the linear model.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q1. (5 points)} First, we want to standardize the features by removing the mean and scaling to unit variance. The standardized feature $\hat{{x}}$ of a feature ${x}$ can be calculated as
+\begin{align*}
+    \hat{{x}} = ({x} - {\mu}) / {\sigma},
+\end{align*}
+where ${\mu}$ is the mean of the feature scores and ${\sigma}$ is the standard deviation of the feature. Calculate the standardized features of the given samples in the dataset.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q2. (5 points)} Suppose we want to use a quadratic cost function $J(w)$ for training the linear model (least squares). Write down $J(w)$ as a function of the features $x_i$, linear model $h_w$, and labels $y_i$. 
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q3. (5 points)} Why is least squares potentially suitable for this problem? You may answer this question either intuitively or theoretically, or in whatever ways make sense.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q4. (5 points)} We will now use gradient descent to optimize the linear model. Calculate the partial derivative $\frac{\partial}{\partial w_i}J(w)$ of the cost function $J(w)$ w.r.t. the parameter $w_i$.
+
+% \paragraph{}
+% \textbf{\hspace{-0.4cm}Q5. (5 points)} Following previous questions, suppose the learning rate is $\alpha$, use pseudocode to describe how gradient descent works to update the model parameters.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q5. (5 points, bias and variance)} Suppose that we only use the number of wheels as the input feature to fit the
+following two models on the given dataset:
+\begin{enumerate}
+    \item $h_w(x) = w_0$
+    \item $h_w(x) = w_0 + w_1x + w_2x^2 + 
+    w_3x^3 + w_4x^4 + w_5x^5$
+\end{enumerate}
+
+What kind of problems do you expect to encounter while fitting the dataset using these two models? Explain your statement accordingly in terms of \textbf{bias and variance}.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q6. (5 points)} What could you do to improve both models? 
+
+\section*{Problem 3. Logistic Regression (20 points total)}
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q1. (5 points)}
+You are a data scientist that wants to develop a binary classifier to classify a patient based on the features which include the observed symptoms captured in the data vector $\mathrm{x}$. A certain disease can be labeled as infectious (class $C_0$) or non-infectious (class C1).
+In this context, describe what each of $P(C_0|\mathrm{x}), P(\mathrm{x}|C_0), P(C_0)$ means w.r.t. your patients. \newline \noindent \textit{(Refer to the Bayes rule $P(C_k|x) &= {P(x|C_k)P(C_k)}/{P(x)}$ as discussed in class.)}
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q2. (5 points)}
+Assume a binary classification model (i.e., examples are represented as feature vectors $\mathrm{x}$ and are classified as either $C_0$ or $C_1$) of the following form
+\begin{align*}
+    P(C_1|\mathrm{x}) &= \frac{1}{1 + \exp(-\mathrm{w}^\top \mathrm{x})},
+\end{align*}
+where $\mathrm{w}$ is a vector of weights. Find $P(C_0|\mathrm{x})$ and $\log \left( \frac{P(C_1|\mathrm{x})}{P(C_0|\mathrm{x})} \right)$.
+
+\paragraph{}
+\textbf{\hspace{-0.4cm}Q3. (10 points)} Consider another binary classification problem. Now we have $N$ pairs of data points $\{(\mathrm{x}_1, C_1),...,(\mathrm{x}_N, C_N)\}$, where $\mathrm{x}_i \in \mathbb{R}^d$ is a feature vector and $C_i$ is its binary class label (i.e., $C_i$ is either 0 or
+1). We will consider using Logistic Regression for this problem. Suppose
+\begin{align*}
+    y_i &= \mathrm{w}^\top \mathrm{x}_i + w_0
+\end{align*}
+and the prediction is based on the Sigmoid function $\sigma(\cdot)$
+\begin{align*}
+    \sigma(y_i) = \frac{1}{1 + \exp(-y_i)}.
+\end{align*}
+
+If $\sigma(y_i) \geq 0.5$, $\mathrm{x}_i$ is predicted as a data point from class 1; otherwise class 0.
+\begin{enumerate}
+    \item (3 points) What is the likelihood function for this problem ?
+    \item (4 points) Prove that the log-likelihood function can be rewritten as 
+    \begin{align*}
+     log(\mathcal{L}(\mathrm{w},w_0)) = \sum_{i=1}^{N} C_i(\mathrm{w}^\top \mathrm{x}_i + w_0) - \log[1 + \exp(\mathrm{w}^\top \mathrm{x}_i + w_0)] \ 
+    \end{align*}
+    \item (3 points) Compute the derivatives of the log-likelihood function w.r.t. $\mathrm{w}$ and $w_0$, respectively. \textit{(you may refer to the \href{https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf}{Matrix Cookbook} for concepts on matrix computation).}
+\end{enumerate}
+
+
+\end{document}
